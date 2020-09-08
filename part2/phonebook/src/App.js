@@ -1,39 +1,76 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import personDb from './services/persons'
+import Person from './components/Person'
+
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
 
-  useEffect(()=>{ 
-    axios
-    .get("http://localhost:3001/persons")
-    .then(responses => {
-      setPersons(responses.data)
-    })
-    
-  },[])  
+
+
+  useEffect(() => {
+    personDb
+      .getAll()
+      .then(r => {
+        setPersons(r)
+      })
+  }, [])
+
+  const handleDeleteOne = (name, id) => {
+    if (window.confirm(`Are you sure to delete ${name} ?`)) {
+      personDb
+        .deletePerson(id)
+        .then(() => {
+          setPersons(persons.filter(n => n.id !== id))
+          setNewName('')
+          setNewNumber('')
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
+  }
 
   const addPerson = (event) => {
     event.preventDefault()
-    const isExist = persons.filter((person) => person.name === newName)
+    const isExist = persons.filter(person => person.name === newName)
 
-    const newPerson = {
-      name: newName,
-      number: newNumber,
-      id: persons.length + 1,
-    }
     if (!(isExist.length > 0)) {
-      console.log('isExist :>> ', isExist);
-      setPersons(persons.concat(newPerson))
-      setNewName('')
-      setNewNumber('')
+      const newPerson = {
+        name: newName,
+        number: newNumber,
+        id: Math.floor(Math.random() * 101)
+      }
+      personDb
+        .create(newPerson)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')
+          setNewNumber('')
+        })
     }
     else
-      alert(
-        newName + ' is already added to phonebook'
-      )
+      {
+        if(window.confirm(`${isExist[0].name} is already exist, do you want to update its information?`)){
+         
+          const newPerson = {
+            name : isExist[0].name,
+            number : newNumber,
+            id : isExist[0].id
+          }
+          personDb
+          .updatePerson(isExist[0].id, newPerson)
+          .then(updatedPerson  => {
+
+              setPersons(persons.map(p => p.name === newPerson.name ? updatedPerson  : p))
+          })
+          .catch(error => {
+            console.log(error)
+          })
+        }
+      }
   }
 
   const handleNameChange = (event) => {
@@ -46,7 +83,6 @@ const App = () => {
     console.log(newFilter)
     setNewFilter(event.target.value)
   }
-  console.log('newFilter :>> ', newFilter);
   return (
     <div>
       <h2>Phonebook</h2>
@@ -58,10 +94,16 @@ const App = () => {
         <div><button type="submit">add</button></div>
       </form>
       <h2>Numbers</h2>
-      
-      {persons.filter(person => person.name.toLowerCase().includes(newFilter.toLowerCase()))
-      .map(person=> <div key={person.name}> {person.name}  {person.number} </div>)}
 
+      <ul>
+        {persons.filter(p => p.name.toLowerCase().includes(newFilter.toLowerCase()))
+          .map((person, i) =>
+            <Person
+              key={i}
+              person={person}
+              handleDelete={() => handleDeleteOne(person.name, person.id)}
+            />)}
+      </ul>
     </div>
   );
 }
