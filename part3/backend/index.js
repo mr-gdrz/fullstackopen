@@ -25,10 +25,31 @@ let notes = [
     }
 ]
 
-app.post('api/notes', (req, res) => {
-    const note = req.body
-    console.log(note)
+const greaterId = () =>{
+    const noteId = notes.length > 0 
+    ? Math.max(...notes.map(n => n.id))
+    : 0
+    return noteId + 1
+}
 
+app.post('/api/notes', (req, res) => {
+    
+    const body = req.body
+    
+    if (!body.content) {
+        return res.status(400).json({
+            error: 'content missing'
+        })        
+    }
+
+    const note =  {
+        content: body.content,
+        important: body.important || false,
+        date : new Date(),
+        id : greaterId()
+    }
+    notes = notes.concat(note)
+    console.log(note)
     res.json(note)
 })
 
