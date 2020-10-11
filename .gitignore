@@ -1,5 +1,9 @@
-part2/collections
+part1/anecdotes/node_modules
+part1/unicafe/node_modules
+part2/collections/node_modules
+part2/courseinfo/node_modules
+part2/phonebook/node_modules
+part2/rest_countries/node_modules
 part2/rest_countries/info.env
 part3/phonebook/node_modules
 part3/backend/node_modules
-node_modules

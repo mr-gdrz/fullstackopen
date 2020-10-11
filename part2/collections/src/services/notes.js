@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseUrl = 'https://secret-earth-35786.herokuapp.com/api/notes'
+const baseUrl = 'api/notes'
 
 
 //get all notes from db.json
