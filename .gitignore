@@ -7,3 +7,4 @@ part2/rest_countries/node_modules
 part2/rest_countries/info.env
 part3/phonebook/node_modules
 part3/backend/node_modules
+part3/backend/.env
