@@ -8,7 +8,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
-  const [notification, setNotification] = useState(null) 
+  const [notification, setNotification] = useState(null)
   const [error, setError] = useState(false)
 
   useEffect(() => {
@@ -27,18 +27,18 @@ const App = () => {
           setNewName('')
           setNewNumber('')
           setNotification(`person by name ${name} deleted successfully`)
-          setTimeout(()=>{
+          setTimeout(() => {
             setNotification(null)
           }, 5000)
         })
         .catch(error => {
           console.log('error')
           setError(true)
-          setNotification( `this object does not exist any more`)
+          setNotification(`this object does not exist any more`)
           setPersons(persons.filter(p => p.name !== name))
-          setTimeout(()=>{
-              setNotification(null)
-              setError(false)
+          setTimeout(() => {
+            setNotification(null)
+            setError(false)
           }, 5000)
         })
     }
@@ -56,41 +56,40 @@ const App = () => {
       }
       personDb
         .create(newPerson).then(returnedPerson => {
+          console.log(returnedPerson)
           setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
           setNotification(`person added successfully`)
           setTimeout(() => {
             setNotification(null)
-        }, 5000)
+          }, 5000)
         })
     }
-    else
-      {
-        if(window.confirm(`${isExist[0].name} is already exist, do you want to update its information?`)){
-         
-          const newPerson = {
-            name : isExist[0].name,
-            number : newNumber,
-            id : isExist[0].id
-          }
-          personDb
+    else {
+      if (window.confirm(`${isExist[0].name} is already exist, do you want to update its information?`)) {
+
+        const newPerson = {
+          name: isExist[0].name,
+          number: newNumber,
+          id: isExist[0].id
+        }
+        personDb
           .updatePerson(isExist[0].id, newPerson)
-          .then(updatedPerson  => {
-            setPersons(persons.map(p => p.name === newPerson.name ? updatedPerson  : p))
+          .then(updatedPerson => {
+            setPersons(persons.map(p => p.name === newPerson.name ? updatedPerson : p))
             setNotification(`${newPerson.name} updated successfully`)
             setNewName('')
             setNewNumber('')
-            setTimeout(() => 
-            {
+            setTimeout(() => {
               setNotification(null)
             }, 5000)
           })
           .catch(error => {
             console.log(error)
           })
-        }
       }
+    }
   }
 
   const handleNameChange = (event) => {
@@ -100,7 +99,7 @@ const App = () => {
     setNewNumber(event.target.value)
   }
   const handleFilterChange = (event) => {
-    console.log(newFilter)
+   // console.log(newFilter)
     setNewFilter(event.target.value)
   }
   return (
@@ -108,7 +107,7 @@ const App = () => {
       <h2>Phonebook</h2>
       <div>filter shown with <input onChange={handleFilterChange} value={newFilter} /></div>
       <h2>Add a new</h2>
-      <Notification error={error} message={notification}/>
+      <Notification error={error} message={notification} />
       <form onSubmit={addPerson}>
         <div>name: <input onChange={handleNameChange} value={newName} /></div>
         <div>number: <input onChange={handleNumberChange} value={newNumber} /></div>
