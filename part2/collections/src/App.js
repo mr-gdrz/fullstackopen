@@ -27,6 +27,17 @@ const App = (props) => {
     const [showAll, setShowAll] = useState(true)
     const [errorMessage, setErrorMessage] = useState(null)
 
+    const toggleDelete = id =>{
+        noteServices.deleteNote(id)
+        .then(() => {
+            setNotes(notes.filter(n => n.id !== id))
+            setErrorMessage('deleted')
+            setTimeout(() => {
+                setErrorMessage(null)
+            }, 2000);
+        })
+    }
+
     const toggleImportance = id => {
 
         const note = notes.find(n => n.id === id)
@@ -69,6 +80,7 @@ const App = (props) => {
             important: Math.random() < 0.5,
             //id: not  es.length + 1,
         }
+        
         noteServices
             .create(noteObject)
             .then(returnedNote => {
@@ -99,7 +111,8 @@ const App = (props) => {
                     <Note
                         key={i}
                         note={note}
-                        toggleImportance={() => toggleImportance(note.id)} />
+                        toggleImportance={() => toggleImportance(note.id)}
+                        toggleDelete={()=> toggleDelete(note.id)} />
                 )}
             </ul>
             <form onSubmit={addNote}>
