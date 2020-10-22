@@ -55,7 +55,8 @@ const App = () => {
         id: Math.floor(Math.random() * 101)
       }
       personDb
-        .create(newPerson).then(returnedPerson => {
+        .create(newPerson)
+        .then(returnedPerson => {
           console.log(returnedPerson)
           setPersons(persons.concat(returnedPerson))
           setNewName('')
@@ -64,6 +65,9 @@ const App = () => {
           setTimeout(() => {
             setNotification(null)
           }, 5000)
+        })
+        .catch(error => {
+          setNotification(error.response.data)
         })
     }
     else {

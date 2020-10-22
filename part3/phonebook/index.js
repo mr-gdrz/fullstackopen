@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config();
 const { request, response } = require('express')
 const express = require('express')
 const morgan = require('morgan')
@@ -139,7 +139,7 @@ const errorHandler = (request, response, next) => {
 
 app.use(errorHandler)
 
-const PORT = process.env.SERVER_PORT
+const PORT = process.env.SERVER_PORT || process.env.PORT
 app.listen(PORT, () => {
     console.log(`server is running on port ${PORT}`);
 })
